@@ -4,8 +4,7 @@ Title: Useful Functions for ESEM
 Version: 0.1.0
 Author: Ali Zia-Tohidi
 Maintainer: Ali Zia-Tohidi <towhidi@ut.ac.ir>
-Description: This package includes some functions for more conveient analysis
-of ESEM and related methods such as ESEM-within-CFA.
+Description: This package includes some functions for more conveient analysis of ESEM and related methods such as ESEM-within-CFA.
 License: MIT
 Encoding: UTF-8
 LazyData: true
