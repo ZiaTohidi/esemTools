@@ -26,10 +26,14 @@
 #'
 #' summary(esem.fit, std = T, fit = T)
 #'
+
 cfa2esem <- function(cfa.fit) {
+  if(class(cfa.fit) != 'lavaan') {
+    stop("'cfa.fit' must be a fitted model of class 'lavaan'")
+  }
   syntax.esem <- paste0(
     paste0(
-      paste0('efa("efa1") * ', cfa.fit@pta$vnames$lv[[1]]),
+      paste0('efa("efa") * ', cfa.fit@pta$vnames$lv[[1]]),
       collapse = ' + \n'),
     ' =~ ',
     paste0(
