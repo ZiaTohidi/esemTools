@@ -1,6 +1,11 @@
+#' @param efa.fit
+#'
+#' @param anchors
+#'
 #' @title Generate ESEM model syntax automatically
 #' @description This function generates an ESEM model syntax based on a previously fitted EFA model and a list of anchor variables or items
 #' @importFrom dplyr %>%
+
 
 esem_syntax <- function(efa.fit, anchors){
   st.fix <- list()
