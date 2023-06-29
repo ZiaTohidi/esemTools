@@ -2,7 +2,7 @@
 #' @description This function Creates a data frame with the parcel scores calculated for items within subscales based on a CFA structure
 #' @import lavaan
 
-parcel.it <- function(data, model, p.size = 2) {
+parcel_it <- function(data, model, p.size = 2) {
   fit.cfa <- lavaan::cfa(model)
   dat.t <- dplyr::select(dat, eval(parse(text = fit.cfa@pta$vnames$ov)))
   n.fac <- fit.cfa@pta$nfac[[1]]
