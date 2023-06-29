@@ -7,8 +7,32 @@
 cfa2esem(cfa.fit)
 }
 \arguments{
-\item{cfa.fit}{}
+\item{cfa.fit}{An fitted model of class \code{lavaan}}
+}
+\value{
+A string syntax for its corresponding ESEM model
 }
 \description{
 \code{cfa2esem} takes a CFA fit from lavaan and returns its corresponding ESEM syntax.
+}
+\examples{
+# fit the CFA model
+
+cfa.mod <- ' visual =~ x1 + x2 + x3
+textual =~ x4 + x5 + x6
+speed =~ x7 + x8 + x9'
+
+cfa.fit <- lavaan::cfa(cfa.mod, data = HolzingerSwineford1939, estimator = 'MLR')
+
+summary(cfa.fit, std = T, fit = T)
+
+
+# fit the ESEM model
+
+esem.mod <- cfa2esem(cfa.fit)
+
+esem.fit <- cfa(esem.mod, data = HolzingerSwineford1939, estimator = 'MLR')
+
+summary(esem.fit, std = T, fit = T)
+
 }
