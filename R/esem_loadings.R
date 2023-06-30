@@ -22,7 +22,7 @@
 #'
 #' esem.fit <- cfa(esem.mod, data = HolzingerSwineford1939)
 #'
-#' esem_loadings(esem.fit, digits = 2)
+#' esem_loadings(esem.fit, standardized = T, digits = 2)
 
 
 esem_loadings <- function(fit, efa.block = NULL, standardized = TRUE, digits = 3) {
