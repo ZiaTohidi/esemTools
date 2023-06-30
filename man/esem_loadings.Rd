@@ -4,11 +4,27 @@
 \alias{esem_loadings}
 \title{ESEM loading pattern matrix}
 \usage{
-esem_loadings(fit, digits = 3)
+esem_loadings(fit, efa.block = NULL, standardized = TRUE, digits = 3)
 }
 \arguments{
-\item{digits}{}
+\item{standardized}{}
+}
+\value{
+A factor loading matrix for an EFA block
 }
 \description{
 \code{esem_loadings} takes an ESEM fit from lavaan and returns a loading pattern matrix. Currently, only traditional ESEM models are supported, not other extended methods such as set ESEM.
+}
+\examples{
+library(lavaan)
+library(esemTools)
+
+esem.mod <- 'efa("efa") * visual +
+             efa("efa") * textual +
+             efa("efa") * speed =~
+             x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9'
+
+esem.fit <- cfa(esem.mod, data = HolzingerSwineford1939)
+
+esem_loadings(esem.fit, digits = 2)
 }
