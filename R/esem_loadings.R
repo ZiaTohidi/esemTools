@@ -33,34 +33,38 @@ esem_loadings <- function(fit, efa.block = NULL, standardized = TRUE, digits = 3
     stop("This is not an ESEM model.")
   }
   if(fit@Model@nefa > 1 && is.null(efa.block) == TRUE) {
-    warning(paste("Your model has", fit@Model@nefa, "EFA blocks. The first block is used."))
-  }
-  if(fit@Model@nefa == 1 && is.null(efa.block) == TRUE) {
     block.n <- 1
-    block <- names(fit@Model@lv.efa.idx[[1]])
+    block <- names(fit@Model@lv.efa.idx[[1]])[[1]]
+    warning(paste("Your model has", fit@Model@nefa, "EFA blocks. The first block is used."))
+  } else {
+    if(fit@Model@nefa == 1 && is.null(efa.block) == TRUE) {
+      block.n <- 1
+      block <- names(fit@Model@lv.efa.idx[[1]])
     } else {
       if(typeof(efa.block) == 'double') {
         if(efa.block <= fit@Model@nefa) {
           block.n <- efa.block
           block <- names(fit@Model@lv.efa.idx[[1]])[as.integer(efa.block)]
+        } else {
+          stop(paste0("The number specified for 'efa.blocks' exceeds the total EFA blocks."))
+        }
+      } else {
+        if(typeof(efa.block) == 'character') {
+          if(efa.block %in% names(fit@Model@lv.efa.idx[[1]])) {
+            block.n <- (1:fit@Model@nefa)[names(fit@Model@lv.efa.idx[[1]])==efa.block]
+            block <- efa.block
           } else {
-            stop(paste0("The number specified for 'efa.blocks' exceeds the total EFA blocks."))
+            stop(paste0("The EFA block '", efa.block, "' does not exist in your model."))
           }
         } else {
-          if(typeof(efa.block) == 'character') {
-            if(efa.block %in% names(esem.fit@Model@lv.efa.idx[[1]])) {
-              block.n <- (1:fit@Model@nefa)[names(fit@Model@lv.efa.idx[[1]])==efa.block]
-              block <- efa.block
-              } else {
-                stop(paste0("The EFA block '", efa.block, "' does not exist in your model."))
-                }
-            } else {
-              stop("'efa.block' must be a string character or a number specifying which EFA block to be used.")
-            }
+          stop("'efa.block' must be a string character or a number specifying which EFA block to be used.")
         }
       }
-    ovs <- fit@pta$vnames$ov.efa[[block.n]]
-  lvs <- fit@pta$vnames$lv.efa[[block.n]]
+    }
+  }
+
+  ovs <- fit@pta$vnames$ov.efa[[1]][fit@Model@ov.efa.idx[[1]][[block.n]]]
+  lvs <- fit@pta$vnames$lv.efa[[1]][fit@Model@lv.efa.idx[[1]][[block.n]]]
   ests <- lavaan::parameterestimates(fit, standardized = standardized)
   if(standardized == TRUE) {
     ests$est <- ests$std.all
