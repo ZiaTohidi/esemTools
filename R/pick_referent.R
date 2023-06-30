@@ -35,6 +35,22 @@
 #'
 
 pick_referent <- function(esem.fit) {
+
+  if(class(esem.fit) != 'lavaan') {
+    stop("'esem.fit' must be a fitted ESEM model of class 'lavaan'")
+  }
+
+  if(t.fit@Model@nefa == 0) {
+    stop("This is not an ESEM model.")
+  }
+
+  if(t.fit@Model@nefa > 1 & is.null(efa.block) == TRUE) {
+    stop(paste("Your model has", t.fit@Model@nefa, "EFA blocks. Please specify which EFA block to be used (a name charachter or a number)!"))
+  }
+
+  if(typeof(efa.block) == 'double' | typeof(efa.block) == 'character') {
+    stop("'efa.block' must be a string character or a number specifying which EFA block to be used.")
+  }
   f.loadings <- esemTools::esem_loadings(fit = esem.fit)
   abs.loadings <- lapply(f.loadings[-1], abs) |> as.data.frame()
   diffs <- data.frame(1:nrow(f.loadings))
