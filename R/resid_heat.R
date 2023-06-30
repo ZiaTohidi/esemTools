@@ -23,8 +23,6 @@
 
 
 heat_resid <- function(fit, threshold = FALSE, show.values = FALSE, font.size = 3) {
-  require(ggplot2)
-
   if(class(fit) != 'lavaan') {
     stop("'fit' must be an object of class 'lavaan'")
   }
