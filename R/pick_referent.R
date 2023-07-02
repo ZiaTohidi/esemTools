@@ -33,32 +33,25 @@
 #'
 #' ewc.fit <- lavaan::cfa(ewc.mod, data = HolzingerSwineford1939, estimator = 'MLR')
 #'
-
-pick_referent <- function(esem.fit) {
-
-  if(class(esem.fit) != 'lavaan') {
-    stop("'esem.fit' must be a fitted ESEM model of class 'lavaan'")
-  }
-
-  if(t.fit@Model@nefa == 0) {
-    stop("This is not an ESEM model.")
-  }
-
-  if(t.fit@Model@nefa > 1 & is.null(efa.block) == TRUE) {
-    stop(paste("Your model has", t.fit@Model@nefa, "EFA blocks. Please specify which EFA block to be used (a name charachter or a number)!"))
-  }
-
-  if(typeof(efa.block) == 'double' | typeof(efa.block) == 'character') {
-    stop("'efa.block' must be a string character or a number specifying which EFA block to be used.")
-  }
-  f.loadings <- esemTools::esem_loadings(fit = esem.fit)
-  abs.loadings <- lapply(f.loadings[-1], abs) |> as.data.frame()
-  diffs <- data.frame(1:nrow(f.loadings))
+pick_referent <- function(esem.fit, efa.block = NULL) {
+  nefa <- esem.fit@Model@nefa
+  efa.labels <- names(esem.fit@Model@lv.efa.idx[[1]])
+  f.loadings <- list()
+  abs.loadings <- list()
+  diffs <- list()
   referents <- list()
-  for(i in 1:(ncol(f.loadings)-1)) {
-    diffs[i] <- abs.loadings[i] - rowMeans(abs.loadings[-i])
-    referents[[i]] <- f.loadings$ovs[diffs[i] == max(diffs[i])]
+  referents[[i]] <- list()
+  for(i in 1:nefa) {
+    f.loadings[[i]] <- esemTools::esem_loadings(fit = esem.fit, efa.block = as.double(i))
+    abs.loadings[[i]] <- lapply(f.loadings[[i]][-1], abs) |> as.data.frame()
+    diffs[[i]] <- data.frame(1:nrow(f.loadings[[i]]))
+    referents[[i]] <- list()
+    for(j in 1:(ncol(f.loadings[[i]])-1)) {
+      diffs[[i]][j] <- abs.loadings[[i]][j] - rowMeans(abs.loadings[[i]][-j])
+      referents[[i]][[j]] <- f.loadings[[i]]$ovs[diffs[[i]][j] == max(diffs[[i]][j])]
+    }
+    names(referents[[i]]) <- colnames(f.loadings[[i]][,-1])
   }
-  names(referents) <- colnames(f.loadings[,-1])
+  names(referents) <- efa.labels
   return(referents)
 }
